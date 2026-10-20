@@ -3,6 +3,7 @@ import functools
 import os
 import pathlib
 import platform
+import sys
 from re import match as match_regex
 from unittest import mock
 from uuid import uuid4
@@ -160,6 +161,10 @@ async def test_secure_https_proxy_absolute_path(
     await asyncio.sleep(0.1)
 
 
+@pytest.mark.skipif(
+    sys.platform != "linux" and sys.version_info >= (3, 11),
+    reason="asyncio supports TLS-in-TLS on Python 3.11+ macOS/Windows, so no error is raised",
+)
 @secure_proxy_xfail_under_py310_linux(raises=AssertionError)
 @pytest.mark.parametrize("web_server_endpoint_type", ("https",))
 @pytest.mark.usefixtures("loop")

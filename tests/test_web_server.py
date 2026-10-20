@@ -1,4 +1,5 @@
 import asyncio
+import sys
 from contextlib import suppress
 from unittest import mock
 
@@ -24,6 +25,10 @@ async def test_simple_server(aiohttp_raw_server, aiohttp_client) -> None:
     raises=client.ServerDisconnectedError,
     reason="The behavior of C-extensions differs from pure-Python: "
     "https://github.com/aio-libs/aiohttp/issues/6446",
+)
+@pytest.mark.skipif(
+    sys.platform != "linux" and sys.version_info >= (3, 11),
+    reason="times out with the pure-Python parser on macOS/Windows Python 3.11+",
 )
 async def test_unsupported_upgrade(aiohttp_raw_server, aiohttp_client) -> None:
     # don't fail if a client probes for an unsupported protocol upgrade

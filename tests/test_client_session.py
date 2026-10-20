@@ -820,6 +820,7 @@ async def test_client_session_timeout_argument() -> None:
     await session.close()
 
 
+@pytest.mark.skip(reason="requires live internet access to example.com")
 async def test_client_session_timeout_zero() -> None:
     timeout = client.ClientTimeout(total=10, connect=0, sock_connect=0, sock_read=0)
     try:
